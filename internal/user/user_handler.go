@@ -3,7 +3,6 @@ package user
 import (
 	"course_project/internal/common"
 	"course_project/internal/user/dto"
-	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -27,38 +26,30 @@ func (h Handler) GetUser(context *gin.Context) {
 	idStr := context.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		common.Error(context, "01", "Invalid Id "+err.Error())
+		common.HandleApiError(context, err)
 		return
 	}
 
 	u, err := h.svc.GetUser(uint(id))
 	if err != nil {
-		common.InternalServerError(context, "0033", err.Error())
+		common.HandleApiError(context, err)
 		return
 	}
 
-	if u == nil {
-		context.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
-		return
-	}
-
-	common.Success(context, u)
+	common.HandleApiSuccess(context, u)
 }
 
 func (h Handler) CreateUser(context *gin.Context) {
 	var request dto.CreateUserReq
 	if err := context.ShouldBindJSON(&request); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		common.HandleApiError(context, err)
 		return
 	}
 
 	u, err := h.svc.CreateUser(request.Name, request.Email)
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	}
-	if u == nil {
-		context.JSON(http.StatusNotFound, gin.H{"error": "Save User Failed"})
+		common.HandleApiError(context, err)
 	}
 
-	common.Success(context, u)
+	common.HandleApiSuccess(context, u)
 }

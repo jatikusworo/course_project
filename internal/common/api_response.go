@@ -1,6 +1,7 @@
 package common
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -14,8 +15,8 @@ type BaseResponse struct {
 	Data       interface{} `json:"data,omitempty"`
 }
 
-func Success(c *gin.Context, data interface{}) {
-	c.JSON(200, BaseResponse{
+func HandleApiSuccess(c *gin.Context, data interface{}) {
+	c.JSON(http.StatusOK, BaseResponse{
 		StatusCode: "00",
 		Message:    "success",
 		RefCode:    uuid.New().String(),
@@ -23,16 +24,19 @@ func Success(c *gin.Context, data interface{}) {
 	})
 }
 
-func Error(c *gin.Context, code string, message string) {
-	c.JSON(400, BaseResponse{
-		StatusCode: code,
-		Message:    message,
-		RefCode:    uuid.New().String(),
-	})
+func HandleApiError(c *gin.Context, err error) {
+	var apiErr *ApiError
+	if errors.As(err, &apiErr) {
+		Error(c, apiErr.HttpStatus, apiErr.StatusCode, apiErr.Message)
+		return
+	}
+
+	// fallback: unexpected error
+	Error(c, http.StatusInternalServerError, "99", err.Error())
 }
 
-func InternalServerError(c *gin.Context, code string, message string) {
-	c.JSON(http.StatusInternalServerError, BaseResponse{
+func Error(c *gin.Context, httpStatus int, code string, message string) {
+	c.JSON(400, BaseResponse{
 		StatusCode: code,
 		Message:    message,
 		RefCode:    uuid.New().String(),

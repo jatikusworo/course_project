@@ -1,6 +1,10 @@
 package user
 
-import "time"
+import (
+	"course_project/internal/common"
+	"fmt"
+	"time"
+)
 
 type Service interface {
 	GetUser(id uint) (*User, error)
@@ -16,13 +20,22 @@ func NewService(r UserRepository) Service {
 }
 
 func (s service) GetUser(id uint) (*User, error) {
-	return s.repo.FindByID(id)
+	u, err := s.repo.FindByID(id)
+	if err != nil {
+		return nil, common.NewInternalError(err.Error())
+	}
+
+	if u == nil {
+		return nil, common.NewNotFound(fmt.Sprintf("user %v does not exist", id))
+	}
+
+	return u, nil
 }
 
 func (s service) CreateUser(name, email string) (*User, error) {
 	u := &User{Name: name, Email: email, CreatedAt: time.Now()}
 	if err := s.repo.Create(u); err != nil {
-		return nil, err
+		return nil, common.NewInternalError(err.Error())
 	}
 	return u, nil
 }

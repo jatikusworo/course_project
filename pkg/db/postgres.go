@@ -16,6 +16,7 @@ func NewGormDB(dsn string) (*gorm.DB, error) {
 		return nil, err
 	}
 
+	// cek schema db used
 	var schema string
 	db.Raw("SELECT CURRENT_SCHEMA()").Scan(&schema)
 	log.Println("Current schema:", schema)
