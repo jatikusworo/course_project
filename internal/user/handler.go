@@ -1,6 +1,7 @@
 package user
 
 import (
+	"course_project/internal/common"
 	"net/http"
 	"strconv"
 
@@ -25,13 +26,13 @@ func (h Handler) GetUser(context *gin.Context) {
 	idStr := context.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Id " + err.Error()})
+		common.Error(context, "01", "Invalid Id "+err.Error())
 		return
 	}
 
 	u, err := h.svc.GetUser(uint(id))
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		common.InternalServerError(context, "0033", err.Error())
 		return
 	}
 
@@ -40,7 +41,7 @@ func (h Handler) GetUser(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, u)
+	common.Success(context, u)
 }
 
 func (h Handler) CreateUser(context *gin.Context) {
@@ -58,5 +59,5 @@ func (h Handler) CreateUser(context *gin.Context) {
 		context.JSON(http.StatusNotFound, gin.H{"error": "Save User Failed"})
 	}
 
-	context.JSON(http.StatusOK, u)
+	common.Success(context, u)
 }
