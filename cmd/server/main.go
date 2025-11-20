@@ -15,6 +15,7 @@ import (
 func main() {
 	// load env
 	cfg := configs.Load()
+	fmt.Println("Running environment:", cfg.Env)
 
 	// inisialisasi DB
 	gormDB, err := db.NewGormDB(cfg.DatabaseURL)

@@ -1,0 +1,4 @@
+appName: course-api
+env: dev
+port: 8080
+databaseURL: postgres://myuser:mypassword@localhost:5432/mydb?sslmode=disable&search_path=public

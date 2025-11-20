@@ -1,0 +1,4 @@
+appName: course-api
+env: uat
+port: 8081
+databaseURL: postgres://uatuser:uatpass@10.1.1.1:5432/uatdb?sslmode=disable
