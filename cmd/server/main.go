@@ -3,6 +3,7 @@ package main
 import (
 	"course_project/configs"
 	"course_project/internal/database"
+	"course_project/internal/router"
 	"course_project/internal/user"
 	"course_project/pkg/db"
 	"fmt"
@@ -33,12 +34,18 @@ func main() {
 	//create repo , service , handler
 	repo := user.NewGormUserRepository(gormDB)
 	userService := user.NewService(repo)
-	h := user.NewHandler(userService)
+	userHandler := user.NewHandler(userService)
 	log.Println("preparing service OK")
 
-	log.Println("Registering handlers")
+	log.Println("Preparing registering handlers")
 	r := gin.Default()
-	user.RegisterRoutes(r, h)
+
+	handlers := &router.Handlers{
+		User: userHandler,
+		//Room: roomHandler,
+	}
+
+	router.RegisterRoutes(r, handlers)
 
 	address := fmt.Sprintf(":%s", cfg.Port)
 	if err := r.Run(address); err != nil {

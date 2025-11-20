@@ -16,12 +16,6 @@ func NewHandler(s Service) *Handler {
 	return &Handler{svc: s}
 }
 
-func RegisterRoutes(r *gin.Engine, h *Handler) {
-	g := r.Group("/user")
-	g.GET(":id", h.GetUser)
-	g.POST("", h.CreateUser)
-}
-
 func (h Handler) GetUser(context *gin.Context) {
 	idStr := context.Param("id")
 	id, err := strconv.Atoi(idStr)
