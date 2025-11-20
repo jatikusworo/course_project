@@ -2,6 +2,7 @@ package user
 
 import (
 	"course_project/internal/common"
+	"course_project/internal/user/dto"
 	"net/http"
 	"strconv"
 
@@ -45,7 +46,7 @@ func (h Handler) GetUser(context *gin.Context) {
 }
 
 func (h Handler) CreateUser(context *gin.Context) {
-	var request CreateUserReq
+	var request dto.CreateUserReq
 	if err := context.ShouldBindJSON(&request); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
