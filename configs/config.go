@@ -8,13 +8,25 @@ import (
 )
 
 type Config struct {
-	AppName     string `mapstructure:"appName"`
-	Env         string `mapstructure:"env"`
-	DatabaseURL string `mapstructure:"databaseURL"`
-	Port        string `mapstructure:"port"`
+	AppName    string `mapstructure:"app_name"`
+	AppEnv     string `mapstructure:"app_env"`
+	ServerPort string `mapstructure:"server_port"`
+
+	Database struct {
+		Host    string `mapstructure:"host"`
+		Port    int    `mapstructure:"port"`
+		User    string `mapstructure:"user"`
+		Pass    string `mapstructure:"pass"`
+		Name    string `mapstructure:"name"`
+		SSLMode string `mapstructure:"sslmode"`
+	} `mapstructure:"database"`
+
+	Log struct {
+		Level string `mapstructure:"level"`
+	} `mapstructure:"log"`
 }
 
-func Load() *Config {
+func Load() Config {
 	env := os.Getenv("APP_ENV")
 	if env == "" {
 		env = "dev"
@@ -33,7 +45,7 @@ func Load() *Config {
 		log.Fatalf("Error parsing config: %v", err)
 	}
 
-	return &cfg
+	return cfg
 }
 
 func getEnv(k, def string) string {

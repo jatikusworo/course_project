@@ -15,10 +15,10 @@ import (
 func main() {
 	// load env
 	cfg := configs.Load()
-	fmt.Println("Running environment:", cfg.Env)
+	fmt.Println("Running environment:", cfg.AppEnv)
 
 	// inisialisasi DB
-	gormDB, err := db.NewGormDB(cfg.DatabaseURL)
+	gormDB, err := db.NewGormDB(cfg)
 	if err != nil {
 		log.Fatalf("db init: %v", err)
 	}
@@ -48,7 +48,7 @@ func main() {
 
 	router.RegisterRoutes(r, handlers)
 
-	address := fmt.Sprintf(":%s", cfg.Port)
+	address := fmt.Sprintf(":%s", cfg.ServerPort)
 	if err := r.Run(address); err != nil {
 		log.Fatalf("server run: %v", err)
 	}

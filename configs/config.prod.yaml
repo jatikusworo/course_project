@@ -1,4 +1,14 @@
-appName: course-api
-env: prod
-port: 8080
-databaseURL: postgres://produser:prodpass@prod-db:5432/proddb?sslmode=disable
+app_name: course-app-dev
+app_env: dev
+server_port: 8080
+
+database:
+  host: localhost
+  port: 5432
+  user: myuser
+  pass: mypassword
+  name: mydb
+  sslmode: disable
+
+log:
+  level: debug
