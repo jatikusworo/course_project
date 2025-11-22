@@ -1,9 +1,9 @@
 app_name: course-app-dev
-app_env: uat
+app_env: docker
 server_port: 8080
 
 database:
-  host: localhost
+  host: host.containers.internal  #used dns internal podman. because postgres not run via  compose (slirp4netns)
   port: 5432
   user: myuser
   pass: mypassword

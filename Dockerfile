@@ -1,43 +1,39 @@
-# ---------- STAGE 1: Build ----------
-FROM docker.io/library/golang:1.25-alpine AS builder
+# --------------------
+# 1. Builder Stage
+# --------------------
+FROM docker.io/library/golang:1.25 AS builder
 
-# Install git (dibutuhkan go mod download)
-RUN apk add --no-cache git
-
-# Set workdir
 WORKDIR /app
 
-# Copy go mod & sum
+# Copy dependency list
 COPY go.mod go.sum ./
 RUN go mod download
 
 # Copy source code
 COPY . .
 
-# Build binary (disable CGO → binary portable)
+# Build static binary
+#RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o app ./cmd/api
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o server cmd/server/main.go
 
 
-# ---------- STAGE 2: Runtime ----------
-FROM alpine:3.19
-
-# Create non-root user
-RUN adduser -D appuser
-USER appuser
+# --------------------
+# 2. Runtime Stage
+# --------------------
+FROM alpine:latest
 
 WORKDIR /app
 
-# Copy binary from builder
-COPY --from=builder /app/server /app/server
+# Install timezone (optional)
+RUN apk add --no-cache tzdata
 
-# Copy config folder (untuk config.dev.yaml / config.uat.yaml / config.prod.yaml)
-COPY configs/ /app/config/
+# Copy binary
+COPY --from=builder /app/server ./app
 
-# Expose port (sesuaikan Gin)
+# Copy config folder (yaml)
+COPY configs ./configs
+
 EXPOSE 8080
 
-# Set default environment (bisa override saat run)
-ENV APP_ENV=dev
-
-# Start app
-CMD ["./server"]
+# Use entrypoint for flexibility
+ENTRYPOINT ["./app"]

@@ -1,0 +1,19 @@
+services:
+  app:
+    build: .
+    container_name: course-app
+    environment:
+      APP_ENV: docker        # ini memberi tahu aplikasi memakai config docker
+      DATABASE_HOST: postgres   # override YAML
+      DATABASE_PORT: 5432
+      DATABASE_USER: myuser
+      DATABASE_PASS: mypassword
+      DATABASE_NAME: mydb
+      DATABASE_SSLMODE: disable
+    ports:
+      - "8080:8080"
+    networks:
+      - podman
+
+networks:
+  podman:

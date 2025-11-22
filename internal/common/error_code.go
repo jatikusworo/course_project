@@ -43,14 +43,14 @@ func (e ErrorCode) HttpStatus() int {
 func (e ErrorCode) StatusCode() string {
 	switch e {
 	case ErrNotFound:
-		return "USER_NOT_FOUND"
+		return "01"
 	case ErrInvalidInput:
-		return "INVALID_INPUT"
+		return "02"
 	case ErrPermissionDenied:
-		return "PERMISSION_DENIED"
+		return "03"
 	case ErrDatabaseError:
-		return "DATABASE_ERROR"
+		return "04"
 	default:
-		return "UNKNOWN_ERROR"
+		return "99"
 	}
 }
