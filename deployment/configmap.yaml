@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: course-app-config
+  namespace: go-dev
+data:
+  APP_ENV: "dev"
+  DATABASE_HOST: "mypostgres"
+  DATABASE_PORT: "5432"
+  DATABASE_NAME: "mydb"
+  DATABASE_SSLMODE: "disable"
