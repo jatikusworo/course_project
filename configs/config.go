@@ -3,6 +3,7 @@ package configs
 import (
 	"log"
 	"os"
+	"strings"
 
 	"github.com/spf13/viper"
 )
@@ -39,6 +40,18 @@ func Load() Config {
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatalf("Error loading config: %v", err)
 	}
+
+	// --- Allow reading ENV ---
+	viper.AutomaticEnv()
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+
+	// Bind ENV overrides
+	viper.BindEnv("database.host", "DATABASE_HOST")
+	viper.BindEnv("database.port", "DATABASE_PORT")
+	viper.BindEnv("database.user", "DATABASE_USER")
+	viper.BindEnv("database.pass", "DATABASE_PASSWORD")
+	viper.BindEnv("database.name", "DATABASE_NAME")
+	viper.BindEnv("database.sslmode", "DATABASE_SSLMODE")
 
 	var cfg Config
 	if err := viper.Unmarshal(&cfg); err != nil {
